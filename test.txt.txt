@@ -1,0 +1,6 @@
+Course Description
+
+This course details the concepts of data recognition and processing as crucial prerequisites in the data analysis ecosystem. Students will be guided to understand data and
+its processing techniques comprehensively. From in-depth analysis, students will learn the essentials of data understanding, data processing techniques, data filtering and
+merging techniques, and information extraction processes. The course is designed to build a solid foundation of understanding in data analysis and practical skills for
+decision-making analysis.
