@@ -1,11 +1,16 @@
+import os
 import cv2
 import pytesseract
+from openai import OpenAI
 
 # Path to Tesseract executable
 pytesseract.pytesseract.tesseract_cmd = r"/opt/homebrew/bin/tesseract"
 
 # Configuration for Tesseract OCR
 myconfig = r"--psm 11 --oem 3"
+
+# Initialize OpenAI client
+client = OpenAI(api_key='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')
 
 # Initialize resizable parameters for the bounding box
 bbox_width = 600
@@ -79,6 +84,11 @@ def main():
                 text_file.write(text)
 
             print("Text saved to output.txt")
+
+            # Analyze the text using GPT-3.5
+            # analysis = analyze_with_gpt(text)
+            # print("GPT-3.5 Analysis:", analysis)
+
             break
         # Break loop if 'q' is pressed to quit
         elif key == ord('q'):
@@ -87,6 +97,15 @@ def main():
     # Release the camera
     cap.release()
     cv2.destroyAllWindows()
+
+# def analyze_with_gpt(text):
+#     response = client.chat.completions.create(
+#         messages=[{"role": "user", "content": text}],
+#         model="gpt-3.5-turbo-1106",
+#         max_tokens=150
+#     )
+#     return response.choices[0].text.strip()
+
 
 if __name__ == "__main__":
     main()
