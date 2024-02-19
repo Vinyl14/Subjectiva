@@ -7,10 +7,10 @@ from openai import OpenAI
 pytesseract.pytesseract.tesseract_cmd = r"/opt/homebrew/bin/tesseract"
 
 # Configuration for Tesseract OCR
-myconfig = r"--psm 11 --oem 3"
+# myconfig = r"--psm 6 --oem 3"
 
 # Initialize OpenAI client
-client = OpenAI(api_key='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')
+client = OpenAI(api_key='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')
 
 # Initialize resizable parameters for the bounding box
 bbox_width = 600
@@ -77,7 +77,7 @@ def main():
             preprocessed_frame = cv2.resize(gray_frame, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 
             # Perform OCR
-            text = pytesseract.image_to_string(preprocessed_frame, config=myconfig)
+            text = pytesseract.image_to_string(preprocessed_frame)
 
             # Save the text to a text file
             with open("output.txt", "w") as text_file:
@@ -86,8 +86,8 @@ def main():
             print("Text saved to output.txt")
 
             # Analyze the text using GPT-3.5
-            # analysis = analyze_with_gpt(text)
-            # print("GPT-3.5 Analysis:", analysis)
+            analysis = analyze_with_gpt(text)
+            print("GPT-3.5 Analysis:", analysis)
 
             break
         # Break loop if 'q' is pressed to quit
@@ -98,13 +98,20 @@ def main():
     cap.release()
     cv2.destroyAllWindows()
 
-# def analyze_with_gpt(text):
-#     response = client.chat.completions.create(
-#         messages=[{"role": "user", "content": text}],
-#         model="gpt-3.5-turbo-1106",
-#         max_tokens=150
-#     )
-#     return response.choices[0].text.strip()
+def analyze_with_gpt(text):
+    extra_prompt = "Check if the input is correct or not. If the input is wrong, display the right answer. If it's correct, show appreciation"
+    prompt = [{"role": "user", "content": text}, {"role": "assistant", "content": extra_prompt}]
+
+    response = client.chat.completions.create(
+        messages=prompt,
+        model="gpt-3.5-turbo-1106",
+        max_tokens=150
+    )
+    # Access the content attribute of the ChatCompletionMessage object
+    return response.choices[0].message.content.strip()
+
+  # Print the response for inspection
+    # Your code to access and return the content
 
 
 if __name__ == "__main__":
